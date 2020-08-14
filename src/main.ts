@@ -1,4 +1,5 @@
-import { Greeter } from './greeter';
+import { DiceSet } from './DiceSet';
 
-const g = new Greeter('Juri');
-g.greet();
+const q = new DiceSet().diceSet1();
+var result = q.rollSet();
+console.log(String(result[0] + ': ' + String(result[1])));

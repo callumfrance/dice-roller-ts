@@ -3,7 +3,7 @@
  * A modifier value is placed here which can be added to the total roll once.
  */
 
-import { Die } from "./Die"
+import { Die } from './Die';
 
 export class DiceGroup {
     public diceType: number;
@@ -37,11 +37,11 @@ export class DiceGroup {
                 this.pushDie(element);
             });
         } else {
-            if (inDice.sides == this.diceType) {
+            if (inDice.sides === this.diceType) {
                 this.dice.push(inDice);
             } else {
-                console.log("Cannot add Die of sides " + String(inDice.sides) +
-                    " to DiceGroup of sides " + String(this.diceType));
+                console.log('Cannot add Die of sides ' + String(inDice.sides) +
+                    ' to DiceGroup of sides ' + String(this.diceType));
             }
         }
     }

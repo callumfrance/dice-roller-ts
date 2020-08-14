@@ -2,8 +2,8 @@
  * A class for containing a group of many different kinds of die.
  */
 
-import { Die } from "./Die"
-import { DiceGroup } from "./DiceGroup"
+import { Die } from './Die';
+import { DiceGroup } from './DiceGroup';
 
 export class DiceSet {
     public diceGroups: Array<DiceGroup>;
@@ -39,7 +39,7 @@ export class DiceSet {
                 new DiceGroup(10, [new Die(10)]),
                 new DiceGroup(12, [new Die(12)]),
                 new DiceGroup(20, [new Die(20)]),
-            ],)
+            ])
         );
     }
 
@@ -89,7 +89,7 @@ export class DiceSet {
                 rolls.push(elementRoll);
             });
         });
-        
+
         return([total, rolls]);
     }
 }

@@ -11,7 +11,7 @@ export class Die {
         name?: string,
     ) {
         this.sides = sides;
-        this.name = name || ("d" + String(sides));
+        this.name = name || ('d' + String(sides));
     }
 
     /**
