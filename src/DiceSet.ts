@@ -4,10 +4,12 @@
 
 import { Die } from './Die';
 import { DiceGroup } from './DiceGroup';
+import { Observable, Observer } from './obsInterfaces';
 
-export class DiceSet {
+export class DiceSet implements Observable {
     public diceGroups: Array<DiceGroup>;
     public lastRollTotal?: number;
+    private rollObservers: Observer[] = [];
 
     /**
      * The constructor can take in an array of DiceGroup objects, however
@@ -42,6 +44,33 @@ export class DiceSet {
                 new DiceGroup(20, [new Die(20)]),
             ])
         );
+    }
+
+    public attach(observer: Observer): void {
+        const isExist = this.rollObservers.includes(observer);
+        if (isExist) {
+            return(console.log('This observer has already been attached'));
+        } else {
+            console.log('Attaching an observer');
+            this.rollObservers.push(observer);
+        }
+    }
+
+    public detach(observer: Observer): void {
+        const observerIndex = this.rollObservers.indexOf(observer);
+        if (observerIndex === -1) {
+            return(console.log('Attempt to detach a nonexistent observer'));
+        } else {
+            this.rollObservers.splice(observerIndex, 1);
+            console.log('Detached an observer');
+        }
+    }
+
+    public notify(): void {
+        console.log('Notifying observers');
+        for (const obs of this.rollObservers) {
+            obs.update(this);
+        }
     }
 
     /**
@@ -126,6 +155,7 @@ export class DiceSet {
         });
 
         this.lastRollTotal = total;
+        this.notify();
         return([total, rolls]);
     }
 
@@ -143,7 +173,7 @@ export class DiceSet {
         dsRollButton.setAttribute('class', 'btn btn-primary w-75');
         dsRollButton.innerText = 'Roll All';
         dsRollButton.addEventListener('click', (e: Event) => {
-            this.rollSet();
+            console.log(String(this.rollSet()));
         });
 
         dsHTML.setAttribute('class', 'card DiceSet');
