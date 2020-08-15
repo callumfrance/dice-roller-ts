@@ -26,6 +26,14 @@ module.exports = {
 
     module: {
         rules: [
+			/***********************************************************************************
+			 * IMPORTING COMPILED BOOSTRAP CSS
+			 * https://getbootstrap.com/docs/4.0/getting-started/webpack/#importing-compiled-css
+			 ***********************************************************************************/
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader']
+			},
             /****************
             * PRE-LOADERS
             *****************/
