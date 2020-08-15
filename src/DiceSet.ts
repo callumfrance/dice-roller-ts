@@ -134,19 +134,69 @@ export class DiceSet {
      */
     public getHTML(): HTMLElement {
         let dsHTML = document.createElement('div');
-        dsHTML.setAttribute('class', 'DiceSet');
-
         let dsRollHTML = document.createElement('h1');
+        let dsGroupsHTML = document.createElement('div');
+        let dsGroupManip = document.createElement('div');
+        let [dsPlus, dsMinus] = this.getGroupManip(dsGroupsHTML);
+        let dsRollButton = document.createElement('button');
+
+        dsRollButton.setAttribute('class', 'btn btn-primary w-75');
+        dsRollButton.innerText = 'Roll All';
+        dsRollButton.addEventListener('click', (e: Event) => {
+            this.rollSet();
+        });
+
+        dsHTML.setAttribute('class', 'card DiceSet');
+        dsRollHTML.setAttribute('class', 'card-title DiceSet');
+        dsGroupsHTML.setAttribute('class', 'card-body DiceSet text-center');
+
         dsRollHTML.innerText = 'Total: ' +
             ((typeof this.lastRollTotal === 'undefined') ?
                 '-' : String(this.lastRollTotal));
 
-        dsHTML.appendChild(dsRollHTML);
+        dsGroupManip.setAttribute('class', 'card p-2 m-2 dsGroupManip');
+
+        dsGroupManip.appendChild(dsPlus);
+        dsGroupManip.appendChild(dsMinus);
+
+        dsGroupsHTML.appendChild(dsRollHTML);
+        dsGroupsHTML.appendChild(dsRollButton);
+        dsHTML.appendChild(dsGroupsHTML);
 
         this.diceGroups.forEach( (dg) => {
-            dsHTML.appendChild(dg.getHTML());
+            dsGroupsHTML.appendChild(dg.getHTML());
         });
+        dsGroupsHTML.appendChild(dsGroupManip);
 
         return(dsHTML);
+    }
+
+    private getGroupManip(dsGroupsHTML: HTMLElement): HTMLElement[] {
+        let dsPlus = document.createElement('button');
+        let dsMinus = document.createElement('button');
+
+        dsPlus.addEventListener('click', (e: Event) => {
+            // this.pushGroup(new DiceGroup(this.diceGroups)); // TODO impl
+            // dsGroupsHTML.insertBefore(this.diceGroups[this.diceGrousp.length - 1].getHTML(),
+            //      dsGroupsHTML.children[dsGroups.children.length - 1]);
+            if (dsGroupsHTML.childNodes.length > 1) {
+                 dsMinus.disabled = false;
+            }
+        });
+        dsPlus.setAttribute('class', 'btn btn-primary p-2 m-2');
+        dsPlus.innerText = '+';
+
+        dsMinus.addEventListener('click', (e: Event) => {
+            if (dsGroupsHTML.childNodes.length > 1) {
+                // let x = this.shiftDiceGroup(); // TODO impl
+                // dsGroupsHTML.removeChild(dsGroupsHTML.childNodes[0]);
+            } else {
+                dsMinus.disabled = true;
+            }
+        });
+        dsMinus.setAttribute('class', 'btn btn-secondary p-2 m-2');
+        dsMinus.innerText = '-';
+
+        return([dsPlus, dsMinus]);
     }
 }

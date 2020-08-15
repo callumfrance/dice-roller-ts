@@ -78,10 +78,9 @@ export class DiceGroup {
     public getHTML(): HTMLElement {
         let dgHTML       = document.createElement('div');
         let dgHead       = document.createElement('h3');
-        let dgPlus       = document.createElement('button');
-     // let dgMinus      = document.createElement('button');
-        let dgDice       = document.createElement('div');
-        let modifierHTML = document.createElement('div');
+        let dgDice       = this.getDiceHTML();
+        let dgDiceManip  = document.createElement('div');
+        let [dgPlus, dgMinus] = this.getDiceManip(dgDice);
 
         dgHTML.setAttribute('class',
             'card p-2 m-2 DiceGroup DiceGroup' + String(this.diceType));
@@ -89,37 +88,72 @@ export class DiceGroup {
         dgHead.setAttribute('class', 'card-title');
         dgHead.innerText = 'd' + String(this.diceType) + ' Rolls: ' +
             ((typeof this.lastRolls === 'undefined' ) ?
-                '-' : String(this.lastRolls));
+                '-' : String(this.lastRolls))
+            + ' (+' + String(this.modifier) + ')';
         dgHTML.appendChild(dgHead);
 
-        dgPlus.addEventListener('click', (e: Event) => {
-                this.pushDie(new Die(this.diceType));
-                dgDice.appendChild(this.dice[this.dice.length - 1].getHTML());
-            });
-        dgPlus.setAttribute('class', 'btn btn-primary');
-        dgPlus.innerText = 'Plus <<+>>';
+        dgDiceManip.setAttribute('class', 'col-2 m-3 card dgDiceManip');
+        dgDiceManip.style.height = '70px';
 
-        // dgMinus.addEventListener('click', (e: Event) => {
-        //     this.shiftDie();
-        //     dgHTML.removeChild(dgHTML.childNodes[0]);
-        // });
-        // dgMinus.innerText = 'Minus <<->>';
+        dgDiceManip.appendChild(dgPlus);
+        dgDiceManip.appendChild(dgMinus);
+        dgDice.appendChild(dgDiceManip);
+
+        dgHTML.appendChild(dgDice);
+
+        return(dgHTML);
+    }
+
+    /**
+     * Generates the HTMElements of all the DiceGroup's Dice.
+     * This is used inside the `getHTML()` public function.
+     */
+    private getDiceHTML(): HTMLElement {
+        let dgDice = document.createElement('div');
 
         dgDice.setAttribute('class',
             'card-body row d-flex justify-content-around');
 
-        dgHTML.appendChild(dgPlus);
-        // dgHTML.appendChild(dgMinus);
-
         this.dice.forEach( (die) => {
             dgDice.appendChild(die.getHTML());
         });
-        dgHTML.appendChild(dgDice);
 
-        modifierHTML.setAttribute('class', 'card DiceGroupModifier');
-        modifierHTML.innerText = 'Mod ' + String(this.modifier);
-        dgHTML.appendChild(modifierHTML);
-
-        return(dgHTML);
+        return(dgDice);
     }
+
+    /**
+     * Generates the HTMLElements of the '+' and '-' buttons of a DiceGroup
+     * This is used inside the `getHTML()` public function
+     */
+    private getDiceManip(dgDice: HTMLElement): HTMLElement[] {
+        let dgPlus = document.createElement('button');
+        let dgMinus = document.createElement('button');
+
+        dgPlus.addEventListener('click', (e: Event) => {
+                this.pushDie(new Die(this.diceType));
+                dgDice.insertBefore(this.dice[this.dice.length - 1].getHTML(),
+                    dgDice.children[dgDice.children.length - 1]
+                );
+                if (dgDice.childNodes.length > 1) {
+                    dgMinus.disabled = false;
+                }
+            });
+        dgPlus.setAttribute('class', 'my-1 p-0 btn btn-primary');
+        dgPlus.innerText = '+';
+
+        dgMinus.addEventListener('click', (e: Event) => {
+                if (dgDice.childNodes.length > 1) {
+                    let x = this.shiftDie();
+                    dgDice.removeChild(dgDice.childNodes[0]);
+                } else {
+                    dgMinus.disabled = true;
+                }
+            });
+        dgMinus.setAttribute('class', 'my-1 p-0 btn btn-secondary');
+        dgMinus.innerText = '-';
+
+
+        return([dgPlus, dgMinus]);
+    }
+
 }

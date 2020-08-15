@@ -28,19 +28,15 @@ export class Die {
     public getHTML(): HTMLElement {
         let dieHTML = document.createElement('div');
         let dieHTMLRoll = document.createElement('p');
-        // let dieHTMLName = document.createElement('p');
 
         dieHTML.setAttribute('class', 'col-2 m-3 card Die ' + this.name);
+        dieHTML.style.height = '70px';
 
-        dieHTMLRoll.setAttribute('class', 'card-body m-auto h4 DieRoll ' + this.name);
+        dieHTMLRoll.setAttribute('class', 'card-title py-3 px-1 m-auto h4 DieRoll ' + this.name);
         dieHTMLRoll.innerText = (typeof this.lastRoll === 'undefined') ?
             '-' : String(this.lastRoll);
 
-        // dieHTMLName.setAttribute('class', 'card-text DieName ' + this.name);
-        // dieHTMLName.innerText = this.name;
-
         dieHTML.appendChild(dieHTMLRoll);
-        // dieHTML.appendChild(dieHTMLName);
 
         return(dieHTML);
     }
