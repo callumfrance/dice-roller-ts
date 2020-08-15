@@ -9,6 +9,7 @@ export class DiceGroup {
     public diceType: number;
     public dice: Array<Die>;
     public modifier: number;
+    public lastRolls?: number;
 
     public constructor(
         diceType: number,
@@ -67,6 +68,49 @@ export class DiceGroup {
             rolls.push(lastRoll);
         });
 
+        this.lastRolls = total;
         return([total, rolls, this.dice]);
+    }
+
+    /**
+     * Returns a generated HTMLElement based on the DiceGroup object values.
+     */
+    public getHTML(): HTMLElement {
+        let dgHTML = document.createElement('div');
+        dgHTML.setAttribute('class', 'DiceGroup DiceGroup' + String(this.diceType));
+        dgHTML.style.border = '2px solid CadetBlue';
+        dgHTML.style.background = 'DarkGoldenRod';
+        dgHTML.innerText = 'd' + String(this.diceType) + ' Rolls: ' +
+            ((typeof this.lastRolls === 'undefined' ) ?
+                '-' : String(this.lastRolls));
+
+        let dgPlus = document.createElement('button');
+        dgPlus.addEventListener('click', (e: Event) => {
+                this.pushDie(new Die(this.diceType));
+                dgHTML.appendChild(this.dice[this.dice.length - 1].getHTML());
+            });
+        dgPlus.innerText = 'Plus <<+>>';
+
+        // let dgMinus = document.createElement('button');
+        // dgMinus.addEventListener('click', (e: Event) => {
+        //     this.shiftDie();
+        //     dgHTML.removeChild(dgHTML.childNodes[0]);
+        // });
+        // dgMinus.innerText = 'Minus <<->>';
+
+        dgHTML.appendChild(dgPlus);
+        // dgHTML.appendChild(dgMinus);
+
+        this.dice.forEach( (die) => {
+            dgHTML.appendChild(die.getHTML());
+        });
+
+        let modifierHTML = document.createElement('div');
+        modifierHTML.setAttribute('class', 'DiceGroupModifier');
+        modifierHTML.innerText = 'Mod ' + String(this.modifier);
+        dgHTML.appendChild(modifierHTML);
+        modifierHTML.style.background = 'GoldenRod';
+
+        return(dgHTML);
     }
 }

@@ -7,6 +7,7 @@ import { DiceGroup } from './DiceGroup';
 
 export class DiceSet {
     public diceGroups: Array<DiceGroup>;
+    public lastRollTotal?: number;
 
     /**
      * The constructor can take in an array of DiceGroup objects, however
@@ -74,6 +75,40 @@ export class DiceSet {
     }
 
     /**
+     * Mutating function to add one or more Die to the DiceSet
+     *  Designed to handle either singular or Array style inputs
+     */
+    public pushDie(inDice: Die): void;
+    public pushDie(inDice: Array<Die>): void;
+    public pushDie(inDice: any): void {
+
+        if (inDice instanceof Array) {
+            inDice.forEach( (de) => {
+                this.pushADie(de);
+            });
+        } else {
+            this.pushADie(inDice);
+        }
+    }
+
+    /**
+     * Private function that is called from pushDie to handle the pushing
+     *  of a singular Die to a specific Set.
+     */
+    private pushADie(inDie: Die): void {
+        let sides = inDie.sides;
+        // See if this Die can be added to a preexisting DiceGroup
+        this.diceGroups.forEach( (dg) => {
+            if (dg.diceType === sides) {
+                dg.pushDie(inDie);
+                return;
+            }
+        });
+        // Appropriate DiceGroup did not exist, so create it and add new Die
+        this.diceGroups.push(new DiceGroup(sides, [inDie]));
+    }
+
+    /**
      * Rolls every Die inside every DiceGroup and outputs the total as well
      *  as the result of each individual Die.
      *
@@ -90,6 +125,28 @@ export class DiceSet {
             });
         });
 
+        this.lastRollTotal = total;
         return([total, rolls]);
+    }
+
+    /**
+     * Returns a generated HTMLElement based on the values of the DiceSet object
+     */
+    public getHTML(): HTMLElement {
+        let dsHTML = document.createElement('div');
+        dsHTML.setAttribute('class', 'DiceSet');
+
+        let dsRollHTML = document.createElement('h1');
+        dsRollHTML.innerText = 'Total: ' +
+            ((typeof this.lastRollTotal === 'undefined') ?
+                '-' : String(this.lastRollTotal));
+
+        dsHTML.appendChild(dsRollHTML);
+
+        this.diceGroups.forEach( (dg) => {
+            dsHTML.appendChild(dg.getHTML());
+        });
+
+        return(dsHTML);
     }
 }
