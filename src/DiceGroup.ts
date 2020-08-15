@@ -76,40 +76,49 @@ export class DiceGroup {
      * Returns a generated HTMLElement based on the DiceGroup object values.
      */
     public getHTML(): HTMLElement {
-        let dgHTML = document.createElement('div');
-        dgHTML.setAttribute('class', 'DiceGroup DiceGroup' + String(this.diceType));
-        dgHTML.style.border = '2px solid CadetBlue';
-        dgHTML.style.background = 'DarkGoldenRod';
-        dgHTML.innerText = 'd' + String(this.diceType) + ' Rolls: ' +
+        let dgHTML       = document.createElement('div');
+        let dgHead       = document.createElement('h3');
+        let dgPlus       = document.createElement('button');
+     // let dgMinus      = document.createElement('button');
+        let dgDice       = document.createElement('div');
+        let modifierHTML = document.createElement('div');
+
+        dgHTML.setAttribute('class',
+            'card p-2 m-2 DiceGroup DiceGroup' + String(this.diceType));
+
+        dgHead.setAttribute('class', 'card-title');
+        dgHead.innerText = 'd' + String(this.diceType) + ' Rolls: ' +
             ((typeof this.lastRolls === 'undefined' ) ?
                 '-' : String(this.lastRolls));
+        dgHTML.appendChild(dgHead);
 
-        let dgPlus = document.createElement('button');
         dgPlus.addEventListener('click', (e: Event) => {
                 this.pushDie(new Die(this.diceType));
-                dgHTML.appendChild(this.dice[this.dice.length - 1].getHTML());
+                dgDice.appendChild(this.dice[this.dice.length - 1].getHTML());
             });
+        dgPlus.setAttribute('class', 'btn btn-primary');
         dgPlus.innerText = 'Plus <<+>>';
 
-        // let dgMinus = document.createElement('button');
         // dgMinus.addEventListener('click', (e: Event) => {
         //     this.shiftDie();
         //     dgHTML.removeChild(dgHTML.childNodes[0]);
         // });
         // dgMinus.innerText = 'Minus <<->>';
 
+        dgDice.setAttribute('class',
+            'card-body row d-flex justify-content-around');
+
         dgHTML.appendChild(dgPlus);
         // dgHTML.appendChild(dgMinus);
 
         this.dice.forEach( (die) => {
-            dgHTML.appendChild(die.getHTML());
+            dgDice.appendChild(die.getHTML());
         });
+        dgHTML.appendChild(dgDice);
 
-        let modifierHTML = document.createElement('div');
-        modifierHTML.setAttribute('class', 'DiceGroupModifier');
+        modifierHTML.setAttribute('class', 'card DiceGroupModifier');
         modifierHTML.innerText = 'Mod ' + String(this.modifier);
         dgHTML.appendChild(modifierHTML);
-        modifierHTML.style.background = 'GoldenRod';
 
         return(dgHTML);
     }

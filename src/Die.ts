@@ -27,21 +27,20 @@ export class Die {
      */
     public getHTML(): HTMLElement {
         let dieHTML = document.createElement('div');
-        dieHTML.setAttribute('class', 'Die ' + this.name);
-        dieHTML.style.border = '1px dotted black';
-        dieHTML.style.background = 'PapayaWhip';
-
         let dieHTMLRoll = document.createElement('p');
-        dieHTMLRoll.setAttribute('class', 'DieRoll ' + this.name);
+        // let dieHTMLName = document.createElement('p');
+
+        dieHTML.setAttribute('class', 'col-2 m-3 card Die ' + this.name);
+
+        dieHTMLRoll.setAttribute('class', 'card-body m-auto h4 DieRoll ' + this.name);
         dieHTMLRoll.innerText = (typeof this.lastRoll === 'undefined') ?
             '-' : String(this.lastRoll);
 
-        let dieHTMLName = document.createElement('p');
-        dieHTMLName.setAttribute('class', 'DieName ' + this.name);
-        dieHTMLName.innerText = this.name;
+        // dieHTMLName.setAttribute('class', 'card-text DieName ' + this.name);
+        // dieHTMLName.innerText = this.name;
 
         dieHTML.appendChild(dieHTMLRoll);
-        dieHTML.appendChild(dieHTMLName);
+        // dieHTML.appendChild(dieHTMLName);
 
         return(dieHTML);
     }
