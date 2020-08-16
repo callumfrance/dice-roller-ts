@@ -162,8 +162,9 @@ export class DiceSet implements Observable {
         let rolls: Array<number> = [];
 
         this.diceGroups.forEach( (element) => {
-            total += element.rollGroup()[0];
-            element.rollGroup()[1].forEach( (elementRoll) => {
+            let thisRoll = element.rollGroup();
+            total += thisRoll[0];
+            thisRoll[1].forEach( (elementRoll) => {
                 rolls.push(elementRoll);
             });
         });
