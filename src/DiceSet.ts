@@ -198,10 +198,11 @@ export class DiceSet implements Observable {
             ((typeof this.lastRollTotal === 'undefined') ?
                 '-' : String(this.lastRollTotal));
 
-        dsGroupManip.setAttribute('class', 'card p-2 m-2 dsGroupManip');
+        dsGroupManip.setAttribute('class', 
+            'card row d-flex flex-row justify-content-around p-2 m-2 dsGroupManip');
 
-        dsGroupManip.appendChild(dsPlus);
         dsGroupManip.appendChild(dsPlusSize);
+        dsGroupManip.appendChild(dsPlus);
 
         dsGroupsHTML.appendChild(dsRollHTML);
         dsGroupsHTML.appendChild(dsRollButton);
@@ -228,11 +229,12 @@ export class DiceSet implements Observable {
             dsPlusSize.value = undefined;
         });
 
-        dsPlus.setAttribute('class', 'btn btn-primary p-2 m-2');
+        dsPlus.setAttribute('class', 'btn btn-primary p-2 m-2 col-5');
         dsPlus.innerText = '+';
 
         dsPlusSize.addEventListener('click', (e: Event) => {
         });
+        dsPlusSize.setAttribute('class', 'col-5');
         dsPlusSize.setAttribute('type', 'number');
 
         return([dsPlus, dsPlusSize]);
