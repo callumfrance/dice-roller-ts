@@ -138,6 +138,20 @@ export class DiceSet implements Observable {
     }
 
     /**
+     * Private function that adds a new (unique) DiceGroup to the set
+     */
+    private pushDiceGroup(inDg: DiceGroup): boolean {
+        if ( this.diceGroups.some( dg => dg.diceType === inDg.diceType )) {
+            console.log('Attempt to push DiceGroup with non-unique type');
+            return(false);
+        } else {
+            this.diceGroups.push(inDg);
+            console.log('Unique diceGroup has been added');
+            return(true);
+        }
+    }
+
+    /**
      * Rolls every Die inside every DiceGroup and outputs the total as well
      *  as the result of each individual Die.
      *
@@ -167,7 +181,7 @@ export class DiceSet implements Observable {
         let dsRollHTML = document.createElement('h1');
         let dsGroupsHTML = document.createElement('div');
         let dsGroupManip = document.createElement('div');
-        let [dsPlus, dsMinus] = this.getGroupManip(dsGroupsHTML);
+        let [dsPlus, dsPlusSize] = this.getGroupManip(dsGroupsHTML);
         let dsRollButton = document.createElement('button');
 
         dsRollButton.setAttribute('class', 'btn btn-primary w-75');
@@ -187,7 +201,7 @@ export class DiceSet implements Observable {
         dsGroupManip.setAttribute('class', 'card p-2 m-2 dsGroupManip');
 
         dsGroupManip.appendChild(dsPlus);
-        dsGroupManip.appendChild(dsMinus);
+        dsGroupManip.appendChild(dsPlusSize);
 
         dsGroupsHTML.appendChild(dsRollHTML);
         dsGroupsHTML.appendChild(dsRollButton);
@@ -203,30 +217,24 @@ export class DiceSet implements Observable {
 
     private getGroupManip(dsGroupsHTML: HTMLElement): HTMLElement[] {
         let dsPlus = document.createElement('button');
-        let dsMinus = document.createElement('button');
+        let dsPlusSize = document.createElement('input');
 
         dsPlus.addEventListener('click', (e: Event) => {
-            // this.pushGroup(new DiceGroup(this.diceGroups)); // TODO impl
-            // dsGroupsHTML.insertBefore(this.diceGroups[this.diceGrousp.length - 1].getHTML(),
-            //      dsGroupsHTML.children[dsGroups.children.length - 1]);
-            if (dsGroupsHTML.childNodes.length > 1) {
-                 dsMinus.disabled = false;
+            let dgSizer = Number(dsPlusSize.value);
+            if (this.pushDiceGroup(new DiceGroup(dgSizer))) {
+                dsGroupsHTML.insertBefore(this.diceGroups[this.diceGroups.length - 1].getHTML(),
+                    dsGroupsHTML.children[this.diceGroups.length + 1]);
             }
+            dsPlusSize.value = undefined;
         });
+
         dsPlus.setAttribute('class', 'btn btn-primary p-2 m-2');
         dsPlus.innerText = '+';
 
-        dsMinus.addEventListener('click', (e: Event) => {
-            if (dsGroupsHTML.childNodes.length > 1) {
-                // let x = this.shiftDiceGroup(); // TODO impl
-                // dsGroupsHTML.removeChild(dsGroupsHTML.childNodes[0]);
-            } else {
-                dsMinus.disabled = true;
-            }
+        dsPlusSize.addEventListener('click', (e: Event) => {
         });
-        dsMinus.setAttribute('class', 'btn btn-secondary p-2 m-2');
-        dsMinus.innerText = '-';
+        dsPlusSize.setAttribute('type', 'number');
 
-        return([dsPlus, dsMinus]);
+        return([dsPlus, dsPlusSize]);
     }
 }
